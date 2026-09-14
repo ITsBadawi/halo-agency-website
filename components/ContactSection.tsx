@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { ArrowUpRight, CheckCircle, Mail, Phone, Clock, Send } from 'lucide-react'
+import { LuxuryHeading } from '@/components/LuxuryHeading'
 
 export function ContactSection() {
   const [submitted, setSubmitted] = useState(false)
@@ -30,27 +31,19 @@ export function ContactSection() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         {/* Left Column: Heading & Contact Info */}
         <div className="lg:col-span-5 overflow-visible">
-          <div className="mb-4">
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/50">
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.9)]" />
-              <span className="text-[11px] font-mono tracking-[0.2em] text-purple-300 font-semibold">
-                05
-              </span>
-              <span className="text-white/30 text-[10px]">/</span>
-              <span className="text-[11px] font-mono tracking-[0.2em] text-neutral-300 uppercase">
-                Get in Touch
-              </span>
-            </div>
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-normal tracking-tight text-white leading-[1.25] mb-6 break-normal">
-            Let&apos;s build{' '}
-            <span className="italic font-serif font-light text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-indigo-300 inline-block">
-              something great.
-            </span>
-          </h2>
-          <p className="text-neutral-300/90 text-sm sm:text-base leading-relaxed mb-10 max-w-md">
-            Tell us about your brand vision, project objectives, or what isn&apos;t working yet. We partner with teams ready to make a significant leap.
-          </p>
+          <LuxuryHeading
+            as="h2"
+            title="Let's build"
+            highlight="something great."
+            subtitle="Tell us about your brand vision, project objectives, or what isn't working yet. We partner with teams ready to make a significant leap."
+            badge={{
+              number: '05',
+              category: 'Get in Touch',
+            }}
+            align="left"
+            titleClassName="text-3xl sm:text-4xl lg:text-[42px] leading-[1.25]"
+            subtitleClassName="mb-10 max-w-md"
+          />
 
           {/* Contact Details (Simplified with requested placeholders only) */}
           <div className="space-y-6 pt-8 border-t border-white/10">

@@ -121,3 +121,29 @@ h6 {
   line-height: 1.25;
   letter-spacing: -0.02em;
 }
+
+@keyframes luxuryShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.luxury-text-shimmer {
+  background: linear-gradient(
+    115deg,
+    #d8b4fe 0%,
+    #e9d5ff 20%,
+    #ffffff 40%,
+    #c4b5fd 60%,
+    #e9d5ff 80%,
+    #d8b4fe 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: luxuryShimmer 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

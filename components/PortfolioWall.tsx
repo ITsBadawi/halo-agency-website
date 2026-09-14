@@ -4,6 +4,8 @@ import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
+import { LuxuryHeading } from '@/components/LuxuryHeading'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -123,26 +125,27 @@ export function PortfolioWall() {
       {/* Section Header */}
       <div className="max-w-7xl mx-auto px-6 sm:px-8 mb-16 relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div className="mb-4">
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/50">
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.9)]" />
-              <span className="text-[11px] font-mono tracking-[0.2em] text-purple-300 font-semibold">
-                04
-              </span>
-              <span className="text-white/30 text-[10px]">/</span>
-              <span className="text-[11px] font-mono tracking-[0.2em] text-neutral-300 uppercase">
-                Selected Work
-              </span>
-            </div>
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-white leading-[1.22]">
-            A continuous{' '}
-            <span className="italic font-serif font-light text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-indigo-300">wall of work.</span>
-          </h2>
+          <LuxuryHeading
+            as="h2"
+            title="A continuous"
+            highlight="wall of work."
+            badge={{
+              number: '04',
+              category: 'Selected Work',
+            }}
+            align="left"
+            titleClassName="text-3xl sm:text-4xl md:text-5xl font-normal leading-[1.22]"
+          />
         </div>
-        <p className="text-neutral-300/90 text-sm sm:text-base max-w-sm leading-relaxed font-normal">
+        <motion.p
+          initial={{ opacity: 0, y: 18, filter: 'blur(4px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          viewport={{ once: false, amount: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="text-neutral-300/90 text-sm sm:text-base max-w-sm leading-relaxed font-normal md:pb-1"
+        >
           A visual journey through identities, architectural forms, and digital artifacts crafted with precision.
-        </p>
+        </motion.p>
       </div>
 
       {/* Moving Rows Container - Scrolls Exclusively on User Scroll */}

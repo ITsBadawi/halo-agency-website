@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { motion, type Variants } from 'framer-motion'
 
 interface ServiceHeroChapterProps {
   id: string
@@ -11,6 +12,94 @@ interface ServiceHeroChapterProps {
   phrase: string
   videoSrc: string
   align?: 'left' | 'right'
+}
+
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+}
+
+const badgeVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 18,
+    scale: 0.94,
+    filter: 'blur(6px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.7,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+}
+
+const wordVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 34,
+    rotateX: 25,
+    scale: 0.94,
+    filter: 'blur(10px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.85,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+}
+
+const highlightVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 38,
+    scale: 0.92,
+    rotateX: 20,
+    filter: 'blur(12px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.95,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+}
+
+const subtitleVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+    filter: 'blur(6px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
 }
 
 export function ServiceHeroChapter({
@@ -58,9 +147,19 @@ export function ServiceHeroChapter({
             isRight ? 'justify-start sm:justify-end text-left sm:text-right' : 'justify-start text-left'
           }`}
         >
-          <div className="max-w-xl">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.25, margin: '-40px' }}
+            variants={containerVariants}
+            style={{ perspective: 1200 }}
+            className={`max-w-xl flex flex-col ${isRight ? 'items-start sm:items-end' : 'items-start'}`}
+          >
             {/* Elegant Chapter Index (Harmonious with Headline) */}
-            <div className={`mb-4 flex ${isRight ? 'justify-start sm:justify-end' : 'justify-start'}`}>
+            <motion.div
+              variants={badgeVariants}
+              className={`mb-4 flex ${isRight ? 'justify-start sm:justify-end' : 'justify-start'}`}
+            >
               <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/50">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.9)]" />
                 <span className="text-[11px] font-mono tracking-[0.2em] text-purple-300 font-semibold">
@@ -75,23 +174,39 @@ export function ServiceHeroChapter({
                   </>
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Headline with safe line-height and clearance to prevent any font collision */}
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-white leading-[1.22] sm:leading-[1.2] mb-4 sm:mb-5 drop-shadow-[0_2px_16px_rgba(0,0,0,0.95)]">
-              {title}{' '}
+              <span className="inline-block overflow-hidden py-0.5">
+                <motion.span variants={wordVariants} className="inline-block">
+                  {title}
+                </motion.span>
+              </span>{' '}
               {highlightWord && (
-                <span className="italic font-serif font-light text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-violet-200 to-indigo-300 drop-shadow-[0_2px_16px_rgba(0,0,0,0.95)]">
-                  {highlightWord}
+                <span className="inline-block overflow-hidden py-0.5">
+                  <motion.span
+                    variants={highlightVariants}
+                    className="inline-block italic font-serif font-light luxury-text-shimmer drop-shadow-[0_2px_16px_rgba(168,85,247,0.45)]"
+                  >
+                    {highlightWord}
+                  </motion.span>
                 </span>
               )}
             </h2>
 
             {/* Supporting Line with clear margin separation */}
-            <p className="text-sm sm:text-base md:text-lg text-neutral-200/90 font-normal leading-relaxed max-w-lg drop-shadow-[0_1px_10px_rgba(0,0,0,0.95)]">
+            <motion.p
+              variants={subtitleVariants}
+              className={`text-sm sm:text-base md:text-lg text-neutral-200/90 font-normal leading-relaxed drop-shadow-[0_1px_10px_rgba(0,0,0,0.95)] ${
+                isRight
+                  ? 'text-left sm:text-right sm:ml-auto max-w-sm sm:max-w-[390px]'
+                  : 'text-left max-w-lg'
+              }`}
+            >
               {phrase}
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </div>
       </div>
     </section>
