@@ -87,7 +87,7 @@ export function Hero3D() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 w-fit mb-6">
             <SparklesIcon className="w-3.5 h-3.5 text-purple-400" />
             <span className="text-[11px] font-semibold tracking-widest uppercase text-neutral-300">
-              Creative Agency / NYC & Worldwide
+              HALO Marketing Agency ✳ IRAQ & Baghdad
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-1" />
           </div>

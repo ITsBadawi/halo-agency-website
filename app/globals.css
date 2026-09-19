@@ -34,6 +34,34 @@
 html {
   background: var(--background);
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Mobile optimizations: smooth proximity snap, native inertia, and responsive section sizing */
+@media (max-width: 768px) {
+  html {
+    scroll-snap-type: y proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .snap-section {
+    scroll-snap-stop: normal;
+  }
+
+  .snap-section#contact {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 }
 
 body {
@@ -43,6 +71,8 @@ body {
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.55;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 button,
@@ -86,12 +116,38 @@ img {
   }
 }
 
+@keyframes marqueeReverse {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
+}
+
 .animate-spin-extremely-slow {
   animation: spinSlow 90s linear infinite;
 }
 
 .animate-marquee {
   animation: marquee 35s linear infinite;
+}
+
+.animate-marquee-slow {
+  animation: marquee 95s linear infinite;
+}
+
+.animate-marquee-reverse-slow {
+  animation: marqueeReverse 105s linear infinite;
+}
+
+.animate-marquee-medium {
+  animation: marquee 80s linear infinite;
+}
+
+.animate-marquee-reverse-medium {
+  animation: marqueeReverse 90s linear infinite;
 }
 
 /* Luxury scrollbar */
@@ -126,21 +182,20 @@ h6 {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 .luxury-text-shimmer {
-  background: linear-gradient(
-    115deg,
-    #d8b4fe 0%,
-    #e9d5ff 20%,
-    #ffffff 40%,
-    #c4b5fd 60%,
-    #e9d5ff 80%,
-    #d8b4fe 100%
-  );
+  background: linear-gradient(115deg,
+      #d8b4fe 0%,
+      #e9d5ff 20%,
+      #ffffff 40%,
+      #c4b5fd 60%,
+      #e9d5ff 80%,
+      #d8b4fe 100%);
   background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;

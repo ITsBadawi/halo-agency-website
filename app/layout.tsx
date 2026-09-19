@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { LanguageProvider } from '@/context/LanguageContext'
 
 export const metadata: Metadata = {
-  title: 'HALO — Creative Agency | Ideas with gravity',
+  title: 'HALO — Marketing Agency | Ideas with gravity',
   description: 'Halo is an independent creative studio crafting visual identities, digital products, and cinematic experiences for ambitious brands.',
   icons: {
     icon: '/logo.png',
@@ -21,9 +22,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="ar" dir="rtl" className="dark scroll-smooth">
       <body className="antialiased bg-[#09090b] text-[#f4f4f6] font-sans selection:bg-purple-500 selection:text-white">
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   )

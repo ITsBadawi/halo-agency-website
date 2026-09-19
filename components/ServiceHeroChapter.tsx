@@ -117,7 +117,7 @@ export function ServiceHeroChapter({
   return (
     <section
       id={id}
-      className="relative w-full h-[100dvh] min-h-[600px] overflow-hidden flex items-end sm:items-center"
+      className="snap-section relative w-full h-screen h-[100dvh] overflow-hidden flex items-center justify-center"
       aria-label={`${chapterNumber} ${title}`}
     >
       {/* Background Full-Screen Cinematic Video */}
