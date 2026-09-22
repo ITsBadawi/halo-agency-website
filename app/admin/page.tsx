@@ -4,6 +4,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  LogOut,
   ExternalLink,
   Save,
   RotateCcw,
@@ -33,6 +38,15 @@ type RowKey = 'row1' | 'row2' | 'row3' | 'row4'
 type SectionKey = 'hero' | 'chapter1' | 'chapter2' | 'chapter3' | 'works' | 'contact' | 'footer'
 
 export default function AdminPage() {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authChecking, setAuthChecking] = useState(true)
+  const [usernameInput, setUsernameInput] = useState('')
+  const [passwordInput, setPasswordInput] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [authError, setAuthError] = useState('')
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+
   // Content State
   const [content, setContent] = useState<SiteContent>(defaultSiteContent)
   const [originalContent, setOriginalContent] = useState<SiteContent>(defaultSiteContent)
@@ -60,8 +74,19 @@ export default function AdminPage() {
     }
   }, [toast])
 
-  // Fetch initial content
+  // Check Session Auth on mount
   useEffect(() => {
+    const savedAuth = sessionStorage.getItem('halo_admin_session')
+    if (savedAuth === 'true') {
+      setIsAuthenticated(true)
+    }
+    setAuthChecking(false)
+  }, [])
+
+  // Fetch initial content once authenticated
+  useEffect(() => {
+    if (!isAuthenticated) return
+
     const loadContent = async () => {
       try {
         const res = await fetch('/api/content', { cache: 'no-store' })
@@ -71,19 +96,57 @@ export default function AdminPage() {
           setOriginalContent(json.data)
         }
       } catch (err) {
-        console.error('Failed to load content from API, using default content:', err)
+        console.error('Failed to load content from API:', err)
       } finally {
         setIsLoading(false)
       }
     }
     loadContent()
-  }, [])
+  }, [isAuthenticated])
 
   // Check dirty state
   useEffect(() => {
     const isDirty = JSON.stringify(content) !== JSON.stringify(originalContent)
     setHasChanges(isDirty)
   }, [content, originalContent])
+
+  // Handle Login
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoggingIn(true)
+    setAuthError('')
+
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: usernameInput.trim(),
+          password: passwordInput,
+        }),
+      })
+
+      const data = await res.json()
+      if (data.success) {
+        setIsAuthenticated(true)
+        sessionStorage.setItem('halo_admin_session', 'true')
+        setUsernameInput('')
+        setPasswordInput('')
+      } else {
+        setAuthError(data.error || 'اسم المستخدم أو كلمة المرور غير صحيحة')
+      }
+    } catch {
+      setAuthError('حدث خطأ في الاتصال بالخادم')
+    } finally {
+      setIsLoggingIn(false)
+    }
+  }
+
+  // Handle Logout
+  const handleLogout = () => {
+    sessionStorage.removeItem('halo_admin_session')
+    setIsAuthenticated(false)
+  }
 
   // Save changes
   const handleSaveAll = async () => {
@@ -109,7 +172,7 @@ export default function AdminPage() {
     }
   }
 
-  // Reset to original changes
+  // Discard changes
   const handleDiscardChanges = () => {
     if (confirm('هل أنت متأكد من رغبتك في إلغاء التعديلات غير المحفوظة؟')) {
       setContent(originalContent)
@@ -246,16 +309,127 @@ export default function AdminPage() {
     reader.readAsText(file)
   }
 
-  // Loading state
-  if (isLoading) {
+  // Initial Auth Checking Screen
+  if (authChecking) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center text-white gap-3">
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center text-white">
         <div className="w-8 h-8 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
-        <span className="text-xs font-mono text-neutral-400">جاري تحميل لوحة التحكم...</span>
       </div>
     )
   }
 
+  // 1. LOGIN SCREEN (No default code or hints shown)
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#09090b] text-[#f4f4f6] flex flex-col items-center justify-center px-4 relative overflow-hidden" dir="rtl">
+        {/* Ambient Subtle Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="w-full max-w-md relative z-10">
+          <div className="rounded-3xl border border-white/10 bg-[#121118]/90 backdrop-blur-2xl p-8 sm:p-10 shadow-2xl shadow-purple-950/30">
+            {/* Header / Logo */}
+            <div className="flex flex-col items-center text-center mb-8">
+              <div className="relative w-14 h-14 mb-4 drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                <Image src="/logo.png" alt="Halo Logo" fill className="object-contain" priority />
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-1 font-sans">
+                HALO<span className="text-purple-400">.</span>
+                <span className="text-xs uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono mr-2 border border-purple-500/30">
+                  لوحة التحكم
+                </span>
+              </h1>
+              <p className="text-xs text-neutral-400 mt-2 font-normal">
+                تسجيل الدخول لإدارة محتوى الموقع
+              </p>
+            </div>
+
+            {/* Error Message */}
+            {authError && (
+              <div className="mb-6 p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs flex items-center gap-2.5 animate-in fade-in">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <span>{authError}</span>
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-mono tracking-wider uppercase text-neutral-400 mb-2">
+                  اسم المستخدم (Username)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    placeholder="أدخل اسم المستخدم..."
+                    required
+                    autoFocus
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-sm font-sans pl-10"
+                  />
+                  <User className="w-4 h-4 text-neutral-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono tracking-wider uppercase text-neutral-400 mb-2">
+                  كلمة المرور (Password)
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="أدخل كلمة المرور..."
+                    required
+                    className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-sm font-sans pl-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full mt-2 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-medium text-xs font-mono tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30 hover:shadow-purple-600/50 cursor-pointer disabled:opacity-50"
+              >
+                {isLoggingIn ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>جاري التحقق...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>تسجيل الدخول للوحة التحكم</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Back link */}
+            <div className="mt-6 pt-6 border-t border-white/10 text-center">
+              <Link
+                href="/"
+                className="text-xs text-neutral-400 hover:text-purple-400 transition-colors inline-flex items-center gap-1.5"
+              >
+                <span>العودة للموقع الرئيسي</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 2. DASHBOARD VIEW (Authenticated)
   return (
     <div className="min-h-screen bg-[#09090b] text-[#f4f4f6] font-sans selection:bg-purple-500 selection:text-white" dir="rtl">
       {/* Toast Notification */}
@@ -332,6 +506,15 @@ export default function AdminPage() {
                   <span>{hasChanges ? 'حفظ التعديلات *' : 'تم الحفظ'}</span>
                 </>
               )}
+            </button>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-full border border-white/10 bg-white/[0.03] hover:bg-red-500/20 hover:border-red-500/30 text-neutral-400 hover:text-red-300 transition-all cursor-pointer"
+              title="تسجيل الخروج"
+            >
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -1388,7 +1571,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Tab 4: Backup & Restore */}
+        {/* Tab 4: Backup & Restore (Change password section completely removed as requested) */}
         {activeTab === 'backup' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div className="rounded-3xl border border-white/10 bg-[#121118]/80 backdrop-blur-xl p-6 sm:p-10 shadow-2xl">

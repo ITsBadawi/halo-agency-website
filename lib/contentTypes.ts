@@ -85,9 +85,6 @@ export interface SiteContent {
     footer: FooterContent
   }
   portfolioWall: PortfolioWallContent
-  admin?: {
-    password?: string
-  }
 }
 
 export const defaultSiteContent: SiteContent = {
@@ -232,8 +229,5 @@ export const defaultSiteContent: SiteContent = {
       "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=85",
       "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1000&q=85"
     ]
-  },
-  admin: {
-    password: "halo2026"
   }
 }
