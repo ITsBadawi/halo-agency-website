@@ -14,15 +14,65 @@ export function ContactSection() {
     service: '',
     message: '',
   })
+  const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setTimeout(() => {
+    setError(null)
+
+    const accessKey =
+      process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || '470694bc-87be-4019-a7ec-8a90970aca04'
+
+    if (!accessKey || accessKey === 'your_access_key_here') {
+      setError(
+        isRTL
+          ? 'يرجى إضافة مفتاح Web3Forms في ملف .env.local لتفعيل الإرسال الحقيقي'
+          : 'Please configure your Web3Forms Access Key in .env.local'
+      )
       setIsSubmitting(false)
-      setSubmitted(true)
-    }, 800)
+      return
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          service: formData.service || (isRTL ? 'غير محدد' : 'Not specified'),
+          message: formData.message,
+          subject: `طلب تواصل جديد من: ${formData.name}`,
+          from_name: 'Halo Agency Website',
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setSubmitted(true)
+        setFormData({ name: '', email: '', service: '', message: '' })
+      } else {
+        setError(
+          result.message ||
+            (isRTL ? 'تعذر إرسال الرسالة، يرجى المحاولة لاحقاً' : 'Submission failed, please try again.')
+        )
+      }
+    } catch {
+      setError(
+        isRTL
+          ? 'حدث خطأ في الاتصال، يرجى التحقق من اتصال الإنترنت والمحاولة لاحقاً'
+          : 'Network error, please check your internet connection.'
+      )
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -90,11 +140,11 @@ export function ContactSection() {
                   {t.contact.emailLabel}
                 </span>
                 <a
-                  href="mailto:hello@haloagency.com"
+                  href="mailto:ah.mu001@gmail.com"
                   className="text-sm font-semibold text-white tracking-wide hover:text-purple-400 transition-colors font-mono"
                   dir="ltr"
                 >
-                  hello@haloagency.com
+                  ah.mu001@gmail.com
                 </a>
               </div>
             </div>
@@ -140,6 +190,11 @@ export function ContactSection() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              {error && (
+                <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs sm:text-sm text-center animate-in fade-in duration-200">
+                  {error}
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="block text-[10px] sm:text-[11px] font-mono tracking-wider uppercase text-neutral-400 mb-1.5">
