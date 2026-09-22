@@ -5,9 +5,17 @@ import Image from 'next/image'
 import { ArrowUp } from 'lucide-react'
 import { smoothScrollTo } from '@/lib/smoothScroll'
 import { useLanguage } from '@/context/LanguageContext'
+import { useSiteContent } from '@/context/SiteContentContext'
 
 export function Footer() {
-  const { t } = useLanguage()
+  const { t, isRTL } = useLanguage()
+  const { content } = useSiteContent()
+
+  const footerData = content?.sections?.footer
+  const tagline = isRTL ? (footerData?.taglineAr || t.footer.tagline) : (footerData?.taglineEn || t.footer.tagline)
+  const rights = isRTL ? (footerData?.rightsAr || t.footer.rights) : (footerData?.rightsEn || t.footer.rights)
+  const crafted = isRTL ? (footerData?.craftedAr || t.footer.crafted) : (footerData?.craftedEn || t.footer.crafted)
+  const location = isRTL ? (footerData?.locationAr || t.footer.location) : (footerData?.locationEn || t.footer.location)
 
   const scrollToTop = () => {
     smoothScrollTo('hero', 1200)
@@ -34,7 +42,7 @@ export function Footer() {
             HALO<span className="text-purple-400">.</span>
           </span>
           <span className="text-xs text-neutral-500 ml-2 hidden sm:inline font-sans">
-            |&nbsp;&nbsp;{t.footer.tagline}
+            |&nbsp;&nbsp;{tagline}
           </span>
         </div>
 
@@ -84,11 +92,11 @@ export function Footer() {
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-500 pt-3 sm:pt-4 border-t border-white/5 font-mono">
-        <p>{t.footer.rights}</p>
+        <p>{rights}</p>
         <p className="flex items-center gap-2">
-          <span>{t.footer.crafted}</span>
+          <span>{crafted}</span>
           <span className="w-1 h-1 rounded-full bg-purple-500" />
-          <span dir="ltr">{t.footer.location}</span>
+          <span>{location}</span>
         </p>
       </div>
     </footer>

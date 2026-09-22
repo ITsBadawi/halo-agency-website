@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { LanguageProvider } from '@/context/LanguageContext'
+import { SiteContentProvider } from '@/context/SiteContentContext'
 
 export const metadata: Metadata = {
   title: 'HALO — Marketing Agency | Ideas with gravity',
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className="dark scroll-smooth">
       <body className="antialiased bg-[#09090b] text-[#f4f4f6] font-sans selection:bg-purple-500 selection:text-white">
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        <SiteContentProvider>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </SiteContentProvider>
       </body>
     </html>
   )

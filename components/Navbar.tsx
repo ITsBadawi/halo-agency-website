@@ -14,7 +14,7 @@ interface NavbarProps {
 export function Navbar({ activeSection = 'hero' }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { t } = useLanguage()
+  const { t, isRTL } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => {

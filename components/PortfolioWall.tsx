@@ -7,9 +7,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
 import { LuxuryHeading } from '@/components/LuxuryHeading'
 import { useLanguage } from '@/context/LanguageContext'
+import { useSiteContent } from '@/context/SiteContentContext'
 
-// Curated high-aesthetic images representing branding, digital products, 3D art, and cinematography
-const row1Images = [
+// Curated high-aesthetic images fallback
+const defaultRow1Images = [
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=85',
@@ -24,7 +25,7 @@ const row1Images = [
   'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=85',
 ]
 
-const row2Images = [
+const defaultRow2Images = [
   'https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=85',
@@ -39,7 +40,7 @@ const row2Images = [
   'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1000&q=85',
 ]
 
-const row3Images = [
+const defaultRow3Images = [
   'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=85',
@@ -54,7 +55,7 @@ const row3Images = [
   'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=85',
 ]
 
-const row4Images = [
+const defaultRow4Images = [
   'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=85',
@@ -68,14 +69,27 @@ const row4Images = [
   'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1000&q=85',
   'https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1000&q=85',
 ]
-
-const fullRow1 = [...row1Images, ...row1Images]
-const fullRow2 = [...row2Images, ...row2Images]
-const fullRow3 = [...row3Images, ...row3Images]
-const fullRow4 = [...row4Images, ...row4Images]
 
 export function PortfolioWall() {
   const { t, isRTL } = useLanguage()
+  const { content } = useSiteContent()
+
+  const r1 = content?.portfolioWall?.row1?.length ? content.portfolioWall.row1 : defaultRow1Images
+  const r2 = content?.portfolioWall?.row2?.length ? content.portfolioWall.row2 : defaultRow2Images
+  const r3 = content?.portfolioWall?.row3?.length ? content.portfolioWall.row3 : defaultRow3Images
+  const r4 = content?.portfolioWall?.row4?.length ? content.portfolioWall.row4 : defaultRow4Images
+
+  // Ensure minimum elements for seamless loop
+  const fullRow1 = r1.length > 5 ? [...r1, ...r1] : [...r1, ...r1, ...r1, ...r1]
+  const fullRow2 = r2.length > 5 ? [...r2, ...r2] : [...r2, ...r2, ...r2, ...r2]
+  const fullRow3 = r3.length > 5 ? [...r3, ...r3] : [...r3, ...r3, ...r3, ...r3]
+  const fullRow4 = r4.length > 5 ? [...r4, ...r4] : [...r4, ...r4, ...r4, ...r4]
+
+  const worksData = content?.sections?.works
+  const title = isRTL ? (worksData?.titleAr || t.works.title) : (worksData?.titleEn || t.works.title)
+  const highlight = isRTL ? (worksData?.highlightAr || t.works.highlight) : (worksData?.highlightEn || t.works.highlight)
+  const badge = isRTL ? (worksData?.badgeAr || t.works.badge) : (worksData?.badgeEn || t.works.badge)
+  const subtitle = isRTL ? (worksData?.subtitleAr || t.works.subtitle) : (worksData?.subtitleEn || t.works.subtitle)
 
   return (
     <section
@@ -91,11 +105,11 @@ export function PortfolioWall() {
         <div>
           <LuxuryHeading
             as="h2"
-            title={t.works.title}
-            highlight={t.works.highlight}
+            title={title}
+            highlight={highlight}
             badge={{
               number: '04',
-              category: t.works.badge,
+              category: badge,
             }}
             align={isRTL ? "right" : "left"}
             titleClassName="text-2xl sm:text-3xl md:text-4xl font-normal leading-[1.22]"
@@ -108,7 +122,7 @@ export function PortfolioWall() {
           transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="text-neutral-300/90 text-xs sm:text-sm md:text-base max-w-sm leading-relaxed font-normal md:pb-1"
         >
-          {t.works.subtitle}
+          {subtitle}
         </motion.p>
       </div>
 

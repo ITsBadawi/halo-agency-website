@@ -11,6 +11,7 @@ import { RotatingBackgroundLogo } from '@/components/RotatingBackgroundLogo'
 
 import { smoothScrollTo, isScrollAnimating } from '@/lib/smoothScroll'
 import { useLanguage } from '@/context/LanguageContext'
+import { useSiteContent } from '@/context/SiteContentContext'
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('hero')
@@ -117,6 +118,26 @@ export default function Home() {
   }, [])
 
   const { t, isRTL } = useLanguage()
+  const { content } = useSiteContent()
+
+  const c1 = content?.sections?.chapter1
+  const c2 = content?.sections?.chapter2
+  const c3 = content?.sections?.chapter3
+
+  const ch1Category = isRTL ? (c1?.categoryAr || t.chapters.c1.category) : (c1?.categoryEn || t.chapters.c1.category)
+  const ch1Title = isRTL ? (c1?.titleAr || t.chapters.c1.title) : (c1?.titleEn || t.chapters.c1.title)
+  const ch1Highlight = isRTL ? (c1?.highlightAr || t.chapters.c1.highlight) : (c1?.highlightEn || t.chapters.c1.highlight)
+  const ch1Phrase = isRTL ? (c1?.phraseAr || t.chapters.c1.phrase) : (c1?.phraseEn || t.chapters.c1.phrase)
+
+  const ch2Category = isRTL ? (c2?.categoryAr || t.chapters.c2.category) : (c2?.categoryEn || t.chapters.c2.category)
+  const ch2Title = isRTL ? (c2?.titleAr || t.chapters.c2.title) : (c2?.titleEn || t.chapters.c2.title)
+  const ch2Highlight = isRTL ? (c2?.highlightAr || t.chapters.c2.highlight) : (c2?.highlightEn || t.chapters.c2.highlight)
+  const ch2Phrase = isRTL ? (c2?.phraseAr || t.chapters.c2.phrase) : (c2?.phraseEn || t.chapters.c2.phrase)
+
+  const ch3Category = isRTL ? (c3?.categoryAr || t.chapters.c3.category) : (c3?.categoryEn || t.chapters.c3.category)
+  const ch3Title = isRTL ? (c3?.titleAr || t.chapters.c3.title) : (c3?.titleEn || t.chapters.c3.title)
+  const ch3Highlight = isRTL ? (c3?.highlightAr || t.chapters.c3.highlight) : (c3?.highlightEn || t.chapters.c3.highlight)
+  const ch3Phrase = isRTL ? (c3?.phraseAr || t.chapters.c3.phrase) : (c3?.phraseEn || t.chapters.c3.phrase)
 
   return (
     <div className="relative min-h-screen bg-[#09090b] text-[#f4f4f6] selection:bg-purple-500 selection:text-white font-sans antialiased overflow-x-hidden w-full max-w-full">
@@ -133,10 +154,10 @@ export default function Home() {
       <ServiceHeroChapter
         id="graphic-design"
         chapterNumber="01"
-        category={t.chapters.c1.category}
-        title={t.chapters.c1.title}
-        highlightWord={t.chapters.c1.highlight}
-        phrase={t.chapters.c1.phrase}
+        category={ch1Category}
+        title={ch1Title}
+        highlightWord={ch1Highlight}
+        phrase={ch1Phrase}
         videoSrc="/videos/graphic-design.mp4"
         align={isRTL ? "right" : "left"}
       />
@@ -145,10 +166,10 @@ export default function Home() {
       <ServiceHeroChapter
         id="photography"
         chapterNumber="02"
-        category={t.chapters.c2.category}
-        title={t.chapters.c2.title}
-        highlightWord={t.chapters.c2.highlight}
-        phrase={t.chapters.c2.phrase}
+        category={ch2Category}
+        title={ch2Title}
+        highlightWord={ch2Highlight}
+        phrase={ch2Phrase}
         videoSrc="/videos/photography.mp4"
         align={isRTL ? "left" : "right"}
       />
@@ -157,10 +178,10 @@ export default function Home() {
       <ServiceHeroChapter
         id="web-development"
         chapterNumber="03"
-        category={t.chapters.c3.category}
-        title={t.chapters.c3.title}
-        highlightWord={t.chapters.c3.highlight}
-        phrase={t.chapters.c3.phrase}
+        category={ch3Category}
+        title={ch3Title}
+        highlightWord={ch3Highlight}
+        phrase={ch3Phrase}
         videoSrc="/videos/web-development.mp4"
         align={isRTL ? "right" : "left"}
       />

@@ -6,9 +6,18 @@ import { motion } from 'framer-motion'
 import { LuxuryHeading } from '@/components/LuxuryHeading'
 import { smoothScrollTo } from '@/lib/smoothScroll'
 import { useLanguage } from '@/context/LanguageContext'
+import { useSiteContent } from '@/context/SiteContentContext'
 
 export function HeroVideo() {
-  const { t } = useLanguage()
+  const { t, isRTL } = useLanguage()
+  const { content } = useSiteContent()
+
+  const heroData = content?.sections?.hero
+  const title = isRTL ? (heroData?.titleAr || t.hero.title) : (heroData?.titleEn || t.hero.title)
+  const highlight = isRTL ? (heroData?.highlightAr || t.hero.highlight) : (heroData?.highlightEn || t.hero.highlight)
+  const subtitle = isRTL ? (heroData?.subtitleAr || t.hero.subtitle) : (heroData?.subtitleEn || t.hero.subtitle)
+  const badge = isRTL ? (heroData?.badgeAr || t.hero.badge) : (heroData?.badgeEn || t.hero.badge)
+  const explore = isRTL ? (heroData?.exploreAr || t.hero.explore) : (heroData?.exploreEn || t.hero.explore)
 
   const scrollToNext = () => {
     smoothScrollTo('graphic-design', 1200)
@@ -36,14 +45,14 @@ export function HeroVideo() {
       <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 text-center flex flex-col items-center justify-center">
         <LuxuryHeading
           as="h1"
-          title={t.hero.title}
-          highlight={t.hero.highlight}
-          subtitle={t.hero.subtitle}
+          title={title}
+          highlight={highlight}
+          subtitle={subtitle}
           badgeCustom={
             <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-black/50 backdrop-blur-xl border border-white/15 shadow-xl shadow-black/50">
               <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-400 animate-pulse" />
               <span className="text-[10px] sm:text-[11px] font-mono tracking-widest uppercase text-neutral-200">
-                {t.hero.badge}
+                {badge}
               </span>
             </div>
           }
@@ -61,7 +70,7 @@ export function HeroVideo() {
           aria-label="Explore Sections"
           className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-purple-400 text-xs font-mono uppercase tracking-widest text-neutral-200 hover:text-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-purple-500/20 hover:-translate-y-0.5"
         >
-          <span>{t.hero.explore}</span>
+          <span>{explore}</span>
           <ArrowDown className="w-3.5 h-3.5 text-purple-400 transition-transform group-hover:translate-y-0.5" />
         </motion.button>
       </div>

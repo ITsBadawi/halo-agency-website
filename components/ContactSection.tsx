@@ -4,9 +4,11 @@ import React, { useState } from 'react'
 import { CheckCircle, Mail, Phone, Clock, Send, MapPin } from 'lucide-react'
 import { LuxuryHeading } from '@/components/LuxuryHeading'
 import { useLanguage } from '@/context/LanguageContext'
+import { useSiteContent } from '@/context/SiteContentContext'
 
 export function ContactSection() {
   const { t, isRTL } = useLanguage()
+  const { content } = useSiteContent()
   const [submitted, setSubmitted] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -16,6 +18,23 @@ export function ContactSection() {
   })
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const contactData = content?.sections?.contact
+  const contactInfo = content?.contact
+
+  const title = isRTL ? (contactData?.titleAr || t.contact.title) : (contactData?.titleEn || t.contact.title)
+  const highlight = isRTL ? (contactData?.highlightAr || t.contact.highlight) : (contactData?.highlightEn || t.contact.highlight)
+  const subtitle = isRTL ? (contactData?.subtitleAr || t.contact.subtitle) : (contactData?.subtitleEn || t.contact.subtitle)
+  const badge = isRTL ? (contactData?.badgeAr || t.contact.badge) : (contactData?.badgeEn || t.contact.badge)
+
+  const phone = contactInfo?.phone || t.contact.phoneValue
+  const email = contactInfo?.email || 'ah.mu001@gmail.com'
+  const location = isRTL
+    ? (contactInfo?.locationAr || t.contact.locationValue)
+    : (contactInfo?.locationEn || t.contact.locationValue)
+  const responseWindow = isRTL
+    ? (contactInfo?.responseWindowAr || t.contact.responseValue)
+    : (contactInfo?.responseWindowEn || t.contact.responseValue)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -85,12 +104,12 @@ export function ContactSection() {
         <div className="lg:col-span-5 w-full">
           <LuxuryHeading
             as="h2"
-            title={t.contact.title}
-            highlight={t.contact.highlight}
-            subtitle={t.contact.subtitle}
+            title={title}
+            highlight={highlight}
+            subtitle={subtitle}
             badge={{
               number: '05',
-              category: t.contact.badge,
+              category: badge,
             }}
             align={isRTL ? "right" : "left"}
             titleClassName="text-3xl sm:text-4xl lg:text-[40px] leading-[1.22]"
@@ -108,11 +127,11 @@ export function ContactSection() {
                   {t.contact.phoneLabel}
                 </span>
                 <a
-                  href={`tel:${t.contact.phoneValue}`}
+                  href={`tel:${phone}`}
                   className="text-base font-semibold text-white tracking-wide hover:text-purple-400 transition-colors font-mono"
                   dir="ltr"
                 >
-                  {t.contact.phoneValue}
+                  {phone}
                 </a>
               </div>
             </div>
@@ -125,8 +144,8 @@ export function ContactSection() {
                 <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-400 block mb-1">
                   {t.contact.locationLabel}
                 </span>
-                <span className="text-sm font-semibold text-white tracking-wide block font-sans" dir="ltr">
-                  {t.contact.locationValue}
+                <span className="text-sm font-semibold text-white tracking-wide block font-sans">
+                  {location}
                 </span>
               </div>
             </div>
@@ -140,11 +159,11 @@ export function ContactSection() {
                   {t.contact.emailLabel}
                 </span>
                 <a
-                  href="mailto:ah.mu001@gmail.com"
+                  href={`mailto:${email}`}
                   className="text-sm font-semibold text-white tracking-wide hover:text-purple-400 transition-colors font-mono"
                   dir="ltr"
                 >
-                  ah.mu001@gmail.com
+                  {email}
                 </a>
               </div>
             </div>
@@ -158,7 +177,7 @@ export function ContactSection() {
                   {t.contact.responseLabel}
                 </span>
                 <span className="text-sm font-medium text-neutral-300">
-                  {t.contact.responseValue}
+                  {responseWindow}
                 </span>
               </div>
             </div>
